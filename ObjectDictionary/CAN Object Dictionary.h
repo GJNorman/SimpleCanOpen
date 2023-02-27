@@ -13,12 +13,9 @@ extern "C"{
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdio.h>      //null
-#ifdef CM_PROJECT
-#include "ConditionMonitorConfigFile.h"
-typedef uint24_t CAN_INDEX_TYPE ;
-#else
+
 typedef uint32_t CAN_INDEX_TYPE ;
-#endif
+
 enum COD_ERROR_CODES{
     COD_NO_ERROR = 0,
     COD_ENTRY_NOT_FOUND,
