@@ -1,4 +1,10 @@
 #include "SDO Application.h"
+
+static CAN_WRITE_CALLBACK_t CAN_WRITE;
+void setSDOAppCANWriteCallback(CAN_WRITE_CALLBACK_t NewCallback)
+{
+	CAN_WRITE = NewCallback;
+}
 void processSDOClient(uint8_t Channel, 
                     TimerClass &SDOTimeOutCounter,
                     bool &SendInitialSDO, 
@@ -7,15 +13,13 @@ void processSDOClient(uint8_t Channel,
                     uint8_t ServerNode)
 {
 	struct SDO_TX_CAN  newSDO = {};
-	CANMsg_t MessageBuffer = {};
-	CANTimestamp_t TimestampBuffer = {};
-		
+
 	if(checkSDOProgress() == SDO_MSG_READY_IN_BUFFER)
 	{
 		uint8_t len=0;
 		uint8_t *Data=ReadSDOBuffer(&len);
 
-        if(FinaliseProcess!=NULL)
+        	if(FinaliseProcess!=NULL)
 		    FinaliseProcess(Data,len);
 		
 	}
@@ -31,19 +35,9 @@ void processSDOClient(uint8_t Channel,
 	if(newSDO.Message_ID != 0)
 	{
 		SDOTimeOutCounter.updateTimerReference();
-		for(uint8_t index=0;index<8;index++)
-		{
-			MessageBuffer.DATA[index] = 0;
-		}
-		MessageBuffer.DATA[0] = newSDO.CCD;
-		MessageBuffer.DATA[1] = newSDO.Index_low;
-		MessageBuffer.DATA[2] = newSDO.Index_high;
-		MessageBuffer.DATA[3] = newSDO.Index_sub;
-		MessageBuffer.ID = newSDO.Message_ID;
-		MessageBuffer.LEN = newSDO.MessageDLC;
 
-		//TODO - add error handling
-		blockingCanWrite(Channel,&MessageBuffer);
+		if(CAN_WRITE!=NULL)
+			CAN_WRITE(Channel,&newSDO);
 	}
 	else
 	{
