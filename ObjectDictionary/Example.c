@@ -82,6 +82,6 @@ struct C_OD_ENTRY FIND_CAN_OBJECT(CAN_INDEX_TYPE CAN_INDEX,bool Factory_Reset_En
   default_value[default_value_index++] = 'T';
   CHECK_COD_ENTRY(CAN_INDEX,HARDWARE_VERSION_INDEX,&total_mem_use, default_value,default_value_index,0xffffffff,0,Factory_Reset_Enabled,&OBJECT_DATA);
 
-  return 0;
+  return OBJECT_DATA;
 }
 
