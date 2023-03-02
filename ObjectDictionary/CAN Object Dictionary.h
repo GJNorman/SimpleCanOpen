@@ -52,6 +52,7 @@ void  CHECK_COD_ENTRY(  CAN_INDEX_TYPE CAN_INDEX,CAN_INDEX_TYPE REFERENCE_CAN_IN
 ///populate C_OD_ENTRY struct values
 void  setup_COD_data(uint8_t Mem_Address, uint8_t default_value[],uint8_t mem_usage,uint32_t max_value,uint32_t min_value,struct C_OD_ENTRY *OBJECT_DATA);
 ///converts a can object dictionary entry index to an EEPROM memory address
+///this needs to be defined externally!! - "see example.c"
 struct C_OD_ENTRY FIND_CAN_OBJECT(CAN_INDEX_TYPE CAN_INDEX,bool Factory_Reset_Enabled);
 
 struct C_OD_ENTRY *FindMostRecentlyAccessedCODObject(void);
