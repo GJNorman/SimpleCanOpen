@@ -37,7 +37,7 @@ int main (void)
   // this will overwrite the value
   uint8_t array[] = {1,2,3,4};
   
-  Edit_COD(HARDWARE_VERSION_INDEX,array, sizeof(array)); 
+  Edit_COD(HARDWARE_VERSION_INDEX,array, sizeof(array)/sizeof(array[0]); 
   
   return 0; 
 }
