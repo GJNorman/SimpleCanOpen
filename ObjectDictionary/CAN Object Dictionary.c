@@ -5,11 +5,6 @@ static struct C_OD_ENTRY MostRecentlyAccessObject;      // for multi-read/write 
 static StoreValueInCOD_t    COD_STORAGE_FUNTION;
 static RecallValueInCOD_t   COD_RECALL_FUNTION;
 
-struct C_OD_ENTRY FIND_CAN_OBJECT(CAN_INDEX_TYPE CAN_INDEX,bool Factory_Reset_Enabled)
-{
-    struct C_OD_ENTRY newstruct={};
-    return newstruct;
-}
 
 void SetCODStorageFunction(StoreValueInCOD_t NewFunc)
 {
