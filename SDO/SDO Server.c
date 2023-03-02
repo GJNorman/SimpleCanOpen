@@ -66,29 +66,38 @@ void Deal_With_SDO(uint8_t Msg[8], uint8_t *DLC, uint16_t *NodeID)
         
         return;
     }
-	struct SDO_TX_CAN *Response = (struct SDO_TX_CAN*)NodeID;    // Node ID is the message header
-	///setup as per SDO protocol
-    Response->Message_ID -= (SDO_RX - SDO_TX);//+Assigned_Node_ID;
-    
-    CAN_INDEX_TYPE Index = (CAN_INDEX_TYPE)(Response->Index_low<<8)+((CAN_INDEX_TYPE)Response->Index_high<<16)+Response->Index_sub;
+    struct SDO_TX_CAN Response;    
+    //setup as per SDO protocol
+    Response.Message_ID = *NodeID - (SDO_RX - SDO_TX);
+    Response.MessageDLC = 0x8;
+    Response.Index_low  = Msg[1];
+    Response.Index_high = Msg[2];
+    Response.Index_sub  = Msg[3];
+    ///initialize other bytes
+    Response.Data_bytes[0]=0x00;
+    Response.Data_bytes[1]=0x00;
+    Response.Data_bytes[2]=0x00;
+    Response.Data_bytes[3]=0x00; 
+	
+    CAN_INDEX_TYPE Index = (CAN_INDEX_TYPE)(Response.Index_low<<8)+((CAN_INDEX_TYPE)Response.Index_high<<16)+Response.Index_sub;
     
     uint8_t check_high_byte=Msg[0]&0xf0;
     
 
         if(check_high_byte==SDO_READ)//read request
         {
-            HANDLE_SDO_READ_REQUEST(Response,Index);
+            HANDLE_SDO_READ_REQUEST(&Response,Index);
         }
         if(check_high_byte==SDO_WRITE)//write request
         {
-            HANDLE_SDO_WRITE_REQUEST(Response, Index,Msg);
+            HANDLE_SDO_WRITE_REQUEST(&Response, Index,Msg);
         }
 
 
     //after a write request we check if any process needs to be executed
     if(check_high_byte==SDO_WRITE)//write request
     {
-        if(Response->CCD != SDO_READ_ERROR)//write did not result in an error
+        if(Response.CCD != SDO_READ_ERROR)//write did not result in an error
         {   
             if(Process_SDO_REQUEST!=0)
                 Process_SDO_REQUEST(Index,Msg);
